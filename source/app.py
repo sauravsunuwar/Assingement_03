@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 import cv2
 
 from image_processor import ImageProcessor
+
 from history_manager import HistoryManager
 
 
