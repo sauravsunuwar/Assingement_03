@@ -337,6 +337,18 @@ class ImageEditorApp:
         (int(w * self.zoom_factor), int(h * self.zoom_factor)),
          Image.Resampling.LANCZOS
          )
+        canvas_w = self.canvas.winfo_width()
+        canvas_h = self.canvas.winfo_height()
+
+        if canvas_w > 1 and canvas_h > 1:
+            pil_img = pil_img.resize(
+              (min(pil_img.width, canvas_w), min(pil_img.height, canvas_h)),
+            Image.Resampling.LANCZOS
+            )
+
+            self.tk_img = ImageTk.PhotoImage(pil_img)
+            self.canvas.config(image=self.tk_img, text="")
+        
 
 
         
@@ -471,7 +483,7 @@ class ImageEditorApp:
             return
         
         img = self.processor.rotate(angle)
-        self.processor.set_img(img)
+        self.processor.set_imgage(img)
         self.history.push(img.copy())
         self.show_image(img)
         self._set_status(f"Applied: Rotation ({angle}°)")
