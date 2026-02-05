@@ -120,6 +120,25 @@ class ImageEditorApp:
                 width=20, bg="#4CAF50", fg="white").pack(pady=3)
         tk.Button(frame, text="Edge Detection", command=self.apply_edges, 
                 width=20, bg="#2196F3", fg="white").pack(pady=3)
+        
+ # Edge Detection sliders (Canny thresholds)
+        tk.Label(frame, text="Edge Detection (Canny):", bg="#f0f0f0").pack(anchor="w", pady=(10, 0))
+
+        tk.Label(frame, text="Threshold 1 (0-255):", bg="#f0f0f0").pack(anchor="w")
+        self.edge_t1 = tk.Scale(frame, from_=0, to=255, orient=tk.HORIZONTAL,
+                                length=200, bg="#f0f0f0")
+        self.edge_t1.set(50)
+        self.edge_t1.pack(fill=tk.X, pady=(0, 5))
+
+        tk.Label(frame, text="Threshold 2 (0-255):", bg="#f0f0f0").pack(anchor="w")
+        self.edge_t2 = tk.Scale(frame, from_=0, to=255, orient=tk.HORIZONTAL,
+                                length=200, bg="#f0f0f0")
+        self.edge_t2.set(150)
+        self.edge_t2.pack(fill=tk.X, pady=(0, 5))
+
+        tk.Button(frame, text="Apply Edge (Sliders)", command=self.apply_edges_slider,
+                  width=20, bg="#03A9F4", fg="white").pack(pady=3)
+
     
     def _build_adjustment_controls(self):
         """Build adjustment controls with sliders section"""
