@@ -51,6 +51,13 @@ class ImageEditorApp:
         self._build_menu()
         self._build_ui()
         self._set_status("No image loaded. Use File > Open to load an image.")
+        # Keyboard Shortcuts 
+        self.root.bind("<Control-o>", lambda e: self.open_image())
+        self.root.bind("<Control-s>", lambda e: self.save_image())
+        self.root.bind("<Control-Shift-S>", lambda e: self.save_as_image())
+        self.root.bind("<Control-z>", lambda e: self.undo())
+        self.root.bind("<Control-y>", lambda e: self.redo())
+
     
     def _build_menu(self):
         """Private method to build the menu bar (Encapsulation)"""
