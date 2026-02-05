@@ -408,8 +408,9 @@ class ImageEditorApp:
         if self.processor.get_image() is None:
             messagebox.showwarning("Warning", "Please load an image first!")
             return
-        
-        img = self.processor.flip(direction)
+        mode = "h" if direction == "horizontal" else "v"
+        img = self.processor.flip(mode)
+        self.processor.set_image(img)
         self.history.push(img.copy())
         self.show_image(img)
         self._set_status(f"Applied: Flip ({direction})")
@@ -421,7 +422,9 @@ class ImageEditorApp:
             return
         
         scale_percent = self.resize_slider.get()
-        img = self.processor.resize(scale_percent)
+        scale_factor = scale_percent / 100.0
+        img = self.processor.resize(scale_factor)
+        self.processor.set_image(img)
         self.history.push(img.copy())
         self.show_image(img)
         h, w = img.shape[:2]
