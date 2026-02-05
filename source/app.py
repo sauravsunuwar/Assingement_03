@@ -205,8 +205,21 @@ class ImageEditorApp:
                                     length=200, bg="#f0f0f0")
         self.resize_slider.set(100)
         self.resize_slider.pack(fill=tk.X, pady=(0,5))
+        
         tk.Button(frame, text="Apply Resize", command=self.apply_resize, 
                 width=20, bg="#795548", fg="white").pack(pady=3)
+        # Zoom controls (view-only)
+        tk.Label(frame, text="Zoom:", bg="#f0f0f0", font=("Arial", 9, "bold")).pack(anchor="w", pady=(10, 2))
+        zoom_frame = tk.Frame(frame, bg="#f0f0f0")
+        zoom_frame.pack(fill=tk.X, pady=3)
+
+        tk.Button(zoom_frame, text="Zoom +", command=self.zoom_in,
+                  width=8, bg="#607D8B", fg="white").pack(side=tk.LEFT, padx=2)
+        tk.Button(zoom_frame, text="Zoom -", command=self.zoom_out,
+                  width=8, bg="#607D8B", fg="white").pack(side=tk.LEFT, padx=2)
+        tk.Button(zoom_frame, text="Reset", command=self.zoom_reset,
+                  width=8, bg="#607D8B", fg="white").pack(side=tk.LEFT, padx=2)
+
     
     def _set_status(self, text):
         """Update status bar text (Private method - Encapsulation)"""
