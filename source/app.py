@@ -373,7 +373,8 @@ class ImageEditorApp:
             return
         
         value = self.brightness_slider.get()
-        img = self.processor.adjust_brightness(value)
+        img = self.processor.brightness(value)
+        self.processor.set_image(img)
         self.history.push(img.copy())
         self.show_image(img)
         self._set_status(f"Applied: Brightness ({value:+d})")
@@ -385,7 +386,8 @@ class ImageEditorApp:
             return
         
         value = self.contrast_slider.get()
-        img = self.processor.adjust_contrast(value)
+        img = self.processor.contrast(value)
+        self.processor.set_image(img)
         self.history.push(img.copy())
         self.show_image(img)
         self._set_status(f"Applied: Contrast ({value:.1f}x)")
