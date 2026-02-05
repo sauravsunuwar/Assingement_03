@@ -46,6 +46,8 @@ class ImageEditorApp:
         self.current_path = None
         self.tk_img = None
         self.original_image = None
+        self.zoom_factor = 1.0
+
         
         # Build GUI components
         self._build_menu()
@@ -329,6 +331,14 @@ class ImageEditorApp:
         # Convert to PIL Image and resize to fit canvas
         pil_img = Image.fromarray(rgb)
         pil_img.thumbnail((900, 650), Image.Resampling.LANCZOS)
+        #apply zoom(view-only)
+        w, h = pil_img.size
+        pil_img = pil_img.resize(
+        (int(w * self.zoom_factor), int(h * self.zoom_factor)),
+         Image.Resampling.LANCZOS
+         )
+
+
         
         # Convert to PhotoImage and display
         self.tk_img = ImageTk.PhotoImage(pil_img)
@@ -378,6 +388,7 @@ class ImageEditorApp:
             return
         
         img = self.processor.grayscale()
+        self.processor.set_image(img)
         self.history.push(img.copy())
         self.show_image(img)
         self._set_status("Applied: Grayscale")
@@ -389,6 +400,7 @@ class ImageEditorApp:
             return
         
         img = self.processor.edges()
+        self.processor.set_image(img)
         self.history.push(img.copy())
         self.show_image(img)
         self._set_status("Applied: Edge Detection (Canny)")
@@ -421,6 +433,7 @@ class ImageEditorApp:
         
         kernel_size = self.blur_slider.get()
         img = self.processor.blur(kernel_size)
+        self.processor.set_image(img)
         self.history.push(img.copy())
         self.show_image(img)
         self._set_status(f"Applied: Blur (kernel size: {kernel_size})")
@@ -458,6 +471,7 @@ class ImageEditorApp:
             return
         
         img = self.processor.rotate(angle)
+        self.processor.set_img(img)
         self.history.push(img.copy())
         self.show_image(img)
         self._set_status(f"Applied: Rotation ({angle}°)")
@@ -489,6 +503,29 @@ class ImageEditorApp:
         h, w = img.shape[:2]
         self._set_status(f"Applied: Resize ({scale_percent}%) | New size: {w}x{h}")
 
+    def zoom_in(self):
+        if self.processor.get_image() is None:
+            messagebox.showwarning("Warning", "Please load an image first!")
+            return
+        self.zoom_factor *= 1.25
+        self.show_image(self.processor.get_image())
+        self._set_status(f"Zoom: {int(self.zoom_factor * 100)}%")
+
+    def zoom_out(self):
+        if self.processor.get_image() is None:
+            messagebox.showwarning("Warning", "Please load an image first!")
+            return
+        self.zoom_factor /= 1.25
+        self.show_image(self.processor.get_image())
+        self._set_status(f"Zoom: {int(self.zoom_factor * 100)}%")
+
+    def zoom_reset(self):
+        if self.processor.get_image() is None:
+            messagebox.showwarning("Warning", "Please load an image first!")
+            return
+        self.zoom_factor = 1.0
+        self.show_image(self.processor.get_image())
+        self._set_status("Zoom reset to 100%")
 
 # ==================== Main Execution ====================
 
