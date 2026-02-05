@@ -6,7 +6,7 @@ Demonstrates OOP principles, OpenCV image processing, and GUI development
 
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
-
+import os
 import cv2
 import numpy as np
 from history_manager import HistoryManager
@@ -87,10 +87,36 @@ class ImageEditorApp:
     
     def _build_ui(self):
         """Private method to build the main user interface (Encapsulation)"""
-        # Left control panel
-        self.left_panel = tk.Frame(self.root, width=280, bg="#f0f0f0")
-        self.left_panel.pack(side=tk.LEFT, fill=tk.Y, padx=5, pady=5)
-        self.left_panel.pack_propagate(False)
+        # Scrollable Left Panel ----
+        left_container = tk.Frame(self.root, bg="#f0f0f0", width=280)
+        left_container.pack(side=tk.LEFT, fill=tk.Y, padx=5, pady=5)
+        left_container.pack_propagate(False)
+
+        self.left_canvas = tk.Canvas(left_container, bg="#f0f0f0", highlightthickness=0)
+        self.left_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        scrollbar = tk.Scrollbar(left_container, orient=tk.VERTICAL, command=self.left_canvas.yview)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        self.left_canvas.configure(yscrollcommand=scrollbar.set)
+
+        # This is where your controls will be placed
+        self.left_panel = tk.Frame(self.left_canvas, bg="#f0f0f0")
+        self.left_canvas.create_window((0, 0), window=self.left_panel, anchor="nw")
+
+        # Update scroll region when content changes
+        self.left_panel.bind(
+               "<Configure>",
+              lambda e: self.left_canvas.configure(scrollregion=self.left_canvas.bbox("all"))
+          )
+
+          # Optional mouse wheel scrolling for (Windows/macOS)
+        def _on_mousewheel(event):
+              self.left_canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+
+        self.left_canvas.bind_all("<MouseWheel>", _on_mousewheel)
+
+        
         
         # Right image display area
         self.right_panel = tk.Frame(self.root, bg="#2b2b2b")
@@ -254,6 +280,7 @@ class ImageEditorApp:
         try:
             # Load image using ImageProcessor
             img = self.processor.load(path)
+            self.zoom_factor = 1.0
             self.original_image = img.copy()
             self.current_path = path
             
@@ -267,7 +294,10 @@ class ImageEditorApp:
             # Update status bar with image info
             h, w = img.shape[:2]
             channels = img.shape[2] if len(img.shape) == 3 else 1
-            self._set_status(f"Loaded: {path.split('/')[-1]} | Size: {w}x{h} | Channels: {channels}")
+            self._set_status(
+                 f"Loaded: {os.path.basename(path)} | Size: {w}x{h} | Channels: {channels}"
+                     )
+
             
         except Exception as e:
             messagebox.showerror("Error", f"Failed to load image:\n{str(e)}")
@@ -283,8 +313,14 @@ class ImageEditorApp:
             return
         
         try:
-            cv2.imwrite(self.current_path, self.processor.get_image())
+            ok = cv2.imwrite(self.current_path, self.processor.get_image())
+            if not ok:
+                 raise Exception("Failed to save image (cv2.imwrite returned False).")
+
+            
             messagebox.showinfo("Success", f"Image saved to:\n{self.current_path}")
+
+
         except Exception as e:
             messagebox.showerror("Error", f"Failed to save image:\n{str(e)}")
     
@@ -306,9 +342,13 @@ class ImageEditorApp:
             return
         
         try:
-            cv2.imwrite(path, self.processor.get_image())
+            ok = cv2.imwrite(path, self.processor.get_image())
+            if not ok:
+             raise Exception("Failed to save image (cv2.imwrite returned False).")
+
             self.current_path = path
             messagebox.showinfo("Success", f"Image saved to:\n{path}")
+
         except Exception as e:
             messagebox.showerror("Error", f"Failed to save image:\n{str(e)}")
     
@@ -377,6 +417,7 @@ class ImageEditorApp:
             self.history.reset()
             self.history.push(self.original_image.copy())
             self.show_image(self.original_image)
+            self.zoom_factor = 1.0
             self._set_status("Image reset to original")
     
     # ==================== Image Processing Methods ====================
@@ -471,7 +512,7 @@ class ImageEditorApp:
             return
         
         img = self.processor.rotate(angle)
-        self.processor.set_img(img)
+        self.processor.set_image(img)
         self.history.push(img.copy())
         self.show_image(img)
         self._set_status(f"Applied: Rotation ({angle}°)")
