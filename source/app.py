@@ -121,7 +121,7 @@ class ImageEditorApp:
         tk.Button(frame, text="Edge Detection", command=self.apply_edges, 
                 width=20, bg="#2196F3", fg="white").pack(pady=3)
         
- # Edge Detection sliders (Canny thresholds)
+                # Edge Detection sliders (Canny thresholds)
         tk.Label(frame, text="Edge Detection (Canny):", bg="#f0f0f0").pack(anchor="w", pady=(10, 0))
 
         tk.Label(frame, text="Threshold 1 (0-255):", bg="#f0f0f0").pack(anchor="w")
@@ -379,6 +379,26 @@ class ImageEditorApp:
         self.history.push(img.copy())
         self.show_image(img)
         self._set_status("Applied: Edge Detection (Canny)")
+
+    def apply_edges_slider(self):
+        """Apply Canny edge detection using threshold sliders"""
+        if self.processor.get_image() is None:
+            messagebox.showwarning("Warning", "Please load an image first!")
+            return
+
+        t1 = self.edge_t1.get()
+        t2 = self.edge_t2.get()
+
+        if t1 >= t2:
+            messagebox.showerror("Error", "Threshold 1 must be less than Threshold 2.")
+            return
+
+        img = self.processor.edges(t1, t2)
+        self.processor.set_image(img)
+        self.history.push(img.copy())
+        self.show_image(img)
+        self._set_status(f"Applied: Edge Detection (t1={t1}, t2={t2})")
+
     
     def apply_blur(self):
         """Apply Gaussian blur with adjustable intensity"""
