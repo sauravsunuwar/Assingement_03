@@ -89,7 +89,7 @@ class ImageEditorApp:
         
         # Image canvas
         self.canvas = tk.Label(self.right_panel, bg="#2b2b2b", text="No Image Loaded", 
-                              fg="white", font=("Arial", 16))
+                            fg="white", font=("Arial", 16))
         self.canvas.pack(fill=tk.BOTH, expand=True)
         
         # Build control sections
@@ -112,45 +112,45 @@ class ImageEditorApp:
         tk.Button(frame, text="Grayscale", command=self.apply_grayscale, 
                 width=20, bg="#4CAF50", fg="white").pack(pady=3)
         tk.Button(frame, text="Edge Detection", command=self.apply_edges, 
-                 width=20, bg="#2196F3", fg="white").pack(pady=3)
+                width=20, bg="#2196F3", fg="white").pack(pady=3)
     
     def _build_adjustment_controls(self):
         """Build adjustment controls with sliders section"""
         frame = tk.LabelFrame(self.left_panel, text="Adjustments", 
-                             font=("Arial", 10, "bold"), bg="#f0f0f0", padx=10, pady=10)
+                            font=("Arial", 10, "bold"), bg="#f0f0f0", padx=10, pady=10)
         frame.pack(fill=tk.X, padx=10, pady=5)
         
         # Blur slider
         tk.Label(frame, text="Blur Intensity (1-31):", bg="#f0f0f0").pack(anchor="w", pady=(5,0))
         self.blur_slider = tk.Scale(frame, from_=1, to=31, orient=tk.HORIZONTAL, 
-                                   resolution=2, length=200, bg="#f0f0f0")
+                                resolution=2, length=200, bg="#f0f0f0")
         self.blur_slider.set(1)
         self.blur_slider.pack(fill=tk.X, pady=(0,5))
         tk.Button(frame, text="Apply Blur", command=self.apply_blur, 
-                 width=20, bg="#FF9800", fg="white").pack(pady=3)
+                width=20, bg="#FF9800", fg="white").pack(pady=3)
         
         # Brightness slider
         tk.Label(frame, text="Brightness (-100 to +100):", bg="#f0f0f0").pack(anchor="w", pady=(10,0))
         self.brightness_slider = tk.Scale(frame, from_=-100, to=100, orient=tk.HORIZONTAL, 
-                                         length=200, bg="#f0f0f0")
+                                        length=200, bg="#f0f0f0")
         self.brightness_slider.set(0)
         self.brightness_slider.pack(fill=tk.X, pady=(0,5))
         tk.Button(frame, text="Apply Brightness", command=self.apply_brightness, 
-                 width=20, bg="#9C27B0", fg="white").pack(pady=3)
+                width=20, bg="#9C27B0", fg="white").pack(pady=3)
         
         # Contrast slider
         tk.Label(frame, text="Contrast (0.5 to 3.0):", bg="#f0f0f0").pack(anchor="w", pady=(10,0))
         self.contrast_slider = tk.Scale(frame, from_=0.5, to=3.0, resolution=0.1, 
-                                       orient=tk.HORIZONTAL, length=200, bg="#f0f0f0")
+                                    orient=tk.HORIZONTAL, length=200, bg="#f0f0f0")
         self.contrast_slider.set(1.0)
         self.contrast_slider.pack(fill=tk.X, pady=(0,5))
         tk.Button(frame, text="Apply Contrast", command=self.apply_contrast, 
-                 width=20, bg="#673AB7", fg="white").pack(pady=3)
+                width=20, bg="#673AB7", fg="white").pack(pady=3)
     
     def _build_transform_controls(self):
         """Build transformation controls section"""
         frame = tk.LabelFrame(self.left_panel, text="Transformations", 
-                             font=("Arial", 10, "bold"), bg="#f0f0f0", padx=10, pady=10)
+                            font=("Arial", 10, "bold"), bg="#f0f0f0", padx=10, pady=10)
         frame.pack(fill=tk.X, padx=10, pady=5)
         
         # Rotation buttons
@@ -158,29 +158,29 @@ class ImageEditorApp:
         rotation_frame = tk.Frame(frame, bg="#f0f0f0")
         rotation_frame.pack(fill=tk.X, pady=3)
         tk.Button(rotation_frame, text="90°", command=lambda: self.apply_rotation(90), 
-                 width=6, bg="#00BCD4", fg="white").pack(side=tk.LEFT, padx=2)
+                width=6, bg="#00BCD4", fg="white").pack(side=tk.LEFT, padx=2)
         tk.Button(rotation_frame, text="180°", command=lambda: self.apply_rotation(180), 
-                 width=6, bg="#00BCD4", fg="white").pack(side=tk.LEFT, padx=2)
+                width=6, bg="#00BCD4", fg="white").pack(side=tk.LEFT, padx=2)
         tk.Button(rotation_frame, text="270°", command=lambda: self.apply_rotation(270), 
-                 width=6, bg="#00BCD4", fg="white").pack(side=tk.LEFT, padx=2)
+                width=6, bg="#00BCD4", fg="white").pack(side=tk.LEFT, padx=2)
         
         # Flip buttons
         tk.Label(frame, text="Flip:", bg="#f0f0f0", font=("Arial", 9, "bold")).pack(anchor="w", pady=(10,2))
         flip_frame = tk.Frame(frame, bg="#f0f0f0")
         flip_frame.pack(fill=tk.X, pady=3)
         tk.Button(flip_frame, text="Horizontal", command=lambda: self.apply_flip("horizontal"), 
-                 width=10, bg="#009688", fg="white").pack(side=tk.LEFT, padx=2)
+                width=10, bg="#009688", fg="white").pack(side=tk.LEFT, padx=2)
         tk.Button(flip_frame, text="Vertical", command=lambda: self.apply_flip("vertical"), 
-                 width=10, bg="#009688", fg="white").pack(side=tk.LEFT, padx=2)
+                width=10, bg="#009688", fg="white").pack(side=tk.LEFT, padx=2)
         
         # Resize controls
         tk.Label(frame, text="Resize (%):", bg="#f0f0f0", font=("Arial", 9, "bold")).pack(anchor="w", pady=(10,2))
         self.resize_slider = tk.Scale(frame, from_=10, to=200, orient=tk.HORIZONTAL, 
-                                     length=200, bg="#f0f0f0")
+                                    length=200, bg="#f0f0f0")
         self.resize_slider.set(100)
         self.resize_slider.pack(fill=tk.X, pady=(0,5))
         tk.Button(frame, text="Apply Resize", command=self.apply_resize, 
-                 width=20, bg="#795548", fg="white").pack(pady=3)
+                width=20, bg="#795548", fg="white").pack(pady=3)
     
     def _set_status(self, text):
         """Update status bar text (Private method - Encapsulation)"""
